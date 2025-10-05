@@ -1,3 +1,4 @@
+import os
 import json
 from PIL import Image, ExifTags
 from datetime import datetime
@@ -18,7 +19,8 @@ for i,filename in enumerate(image_paths):
         #print(date_obj)
         print(exif['DateTimeOriginal'])
         #print(str(exif['DateTimeOriginal']))
-        d = {"date_prop_id":"P571","description":"Country in western Europe","id":f"{i}","image":"Flag_of_Belgium.svg","instance_of":["sovereign state"],"label":f"{i}","occupations":None,"page_views":234155,"wikipedia_title":"Belgium","year":date_str}
+        img_file = os.path.basename(filename)
+        d = {"date_prop_id":"P571","description":"Country in western Europe","id":f"{i}","image":f"{img_file}","instance_of":["sovereign state"],"label":f"{i}","occupations":None,"page_views":234155,"wikipedia_title":"Belgium","year":date_str}
         items.append(json.dumps(d)+"\n")
     else:
         print('Unable to get date from exif for %s' % filename)
