@@ -100,7 +100,8 @@ export default function ItemCard(props: Props) {
               <div
                 className={styles.image}
                 style={{
-                  backgroundImage: `url("${createWikimediaImage(item.image)}")`,
+                  //backgroundImage: `url("${createWikimediaImage(item.image)}")`,
+                  backgroundImage: `url("/images/heart.svg")`,
                 }}
               ></div>
               <animated.div
