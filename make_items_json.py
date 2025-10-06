@@ -3,11 +3,31 @@ import json
 from PIL import Image, ExifTags
 from datetime import datetime
 from glob import glob as glob
+from pillow_heif import register_heif_opener
 
 image_paths = glob("/home/czw/Documents/2025/wikitrivia_images/*")
 items = []
+
+register_heif_opener()
+
+from PIL import Image
+import pillow_heif
+
+
+pillow_heif.register_heif_opener()
+
+#img = Image.open('/home/czw/Documents/2025/wikitrivia_images/IMG_8738.HEIC')
+#exif_data = img.getexif()
+#img.save('/home/czw/Documents/2025/wikitrivia/test_image.png', format('jpeg'), exif_data=exif_data)
+#
+#exit()
+
 for i,filename in enumerate(image_paths):
-    image_exif = Image.open(filename)._getexif()
+    try:
+        image_exif = Image.open(filename)._getexif()
+    except:
+        continue
+
     #{"date_prop_id":"P571","description":"Country in western Europe","id":"Q31","image":"Flag_of_Belgium.svg","instance_of":["sovereign state"],"label":"Belgium","occupations":null,"page_views":234155,"wikipedia_title":"Belgium","year":1830}
     if image_exif:
         # Make a map with tag names

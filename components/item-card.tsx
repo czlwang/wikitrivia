@@ -95,7 +95,11 @@ export default function ItemCard(props: Props) {
                 transform: cardSpring.transform,
               }}
             >
-              <div className={styles.top}>
+              <div className={classNames(styles.top, {
+                  [styles.correct]: "played" in item && item.played.correct,
+                  [styles.incorrect]: "played" in item && !item.played.correct,
+                })}
+              >
               </div>
               <div
                 className={styles.image}
@@ -120,7 +124,10 @@ export default function ItemCard(props: Props) {
               </animated.div>
             </animated.div>
             <animated.div
-              className={styles.back}
+              className={classNames(styles.back, {
+                  [styles.correct]: "played" in item && item.played.correct,
+                  [styles.incorrect]: "played" in item && !item.played.correct,
+                })}
               style={{
                 opacity: cardSpring.opacity,
                 transform: cardSpring.transform.to(
