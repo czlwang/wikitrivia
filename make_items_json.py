@@ -14,13 +14,21 @@ for i,filename in enumerate(image_paths):
         exif = { ExifTags.TAGS[k]: v for k, v in image_exif.items() if k in ExifTags.TAGS and type(v) is not bytes }
         #print(exif)
         # Grab the date
-        date_obj = datetime.strptime(exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
-        date_str = exif['DateTimeOriginal']
+        if 'DateTimeOriginal' not in exif:
+            print("no date")
+            continue
+        try:
+            date_obj = datetime.strptime(exif['DateTimeOriginal'], '%Y:%m:%d %H:%M:%S')
+        except:
+            print("giving up")
+            continue
+        date_str = date_obj.strftime("%Y-%m-%d")
+        #print(date_str)
         #print(date_obj)
         print(exif['DateTimeOriginal'])
         #print(str(exif['DateTimeOriginal']))
         img_file = os.path.basename(filename)
-        d = {"date_prop_id":"P571","description":"Country in western Europe","id":f"{i}","image":f"{img_file}","instance_of":["sovereign state"],"label":f"{i}","occupations":None,"page_views":234155,"wikipedia_title":"Belgium","year":date_str}
+        d = {"date_prop_id":"P404","description":"Country in western Europe","id":f"{i}","image":f"{img_file}","instance_of":["sovereign state"],"label":f"{i}","occupations":None,"page_views":234155,"wikipedia_title":"Belgium","year":date_str}
         items.append(json.dumps(d)+"\n")
     else:
         print('Unable to get date from exif for %s' % filename)

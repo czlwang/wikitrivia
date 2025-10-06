@@ -1,6 +1,22 @@
 import { Item, PlayedItem } from "../types/item";
 import { createWikimediaImage } from "./image";
 
+export function formatDate(dateString: string): string{
+  const date = new Date(dateString);
+  // Handle invalid date strings
+  //return dateString;
+  console.log(dateString);
+  if (isNaN(date.getTime())) {
+    return "Invalid Date";
+  }
+
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 export function getRandomItem(deck: Item[], played: Item[]): Item {
   const periods: [number, number][] = [
     [-100000, 1000],
@@ -11,15 +27,15 @@ export function getRandomItem(deck: Item[], played: Item[]): Item {
     periods[Math.floor(Math.random() * periods.length)];
   const avoidPeople = Math.random() > 0.5;
   const candidates = deck.filter((candidate) => {
-    if (avoidPeople && candidate.instance_of.includes("human")) {
-      return false;
-    }
-    if (candidate.year < fromYear || candidate.year > toYear) {
+    if (duplicate(candidate, played)) {
+        console.log("duplicate");
       return false;
     }
     if (tooClose(candidate, played)) {
+        console.log("too close");
       return false;
     }
+    console.log("found it~");
     return true;
   });
 
@@ -30,11 +46,19 @@ export function getRandomItem(deck: Item[], played: Item[]): Item {
 }
 
 function tooClose(item: Item, played: Item[]) {
-  let distance = (played.length < 40) ? 5 : 1;
-  if (played.length < 11)
-    distance = 110 - 10 * played.length;
+    console.log("checking");
+  var too_close = played.some((p) => {const dateA = new Date(item.year).getTime();
+                             console.log(dateA);
+                             const dateB = new Date(p.year).getTime();
+                             console.log(dateB);
+                             return Math.abs(dateA-dateB) <= 86400000;
+                            });
+  console.log(too_close);
+  return too_close;
+}
 
-  return played.some((p) => Math.abs(item.year - p.year) < distance);
+function duplicate(item: Item, played: Item[]) {
+  return played.some((p) => item.id==p.id);
 }
 
 export function checkCorrect(
@@ -42,7 +66,9 @@ export function checkCorrect(
   item: Item,
   index: number
 ): { correct: boolean; delta: number } {
-  const sorted = [...played, item].sort((a, b) => a.year - b.year);
+  const sorted = [...played, item].sort((a, b) => {const dateA = new Date(a.year).getTime();
+                                                   const dateB = new Date(b.year).getTime();
+                                                   return dateA - dateB;});
   const correctIndex = sorted.findIndex((i) => {
     return i.id === item.id;
   });

@@ -5,6 +5,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { Item, PlayedItem } from "../types/item";
 import { createWikimediaImage } from "../lib/image";
 import styles from "../styles/item-card.module.scss";
+import { formatDate } from "../lib/items";
 
 type Props = {
   draggable?: boolean;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 const datePropIdMap: { [datePropId: string]: string } = {
+  P404: "_",
   P575: "discovered", // or invented
   P7589: "date of assent",
   P577: "published",
@@ -112,7 +114,7 @@ export default function ItemCard(props: Props) {
                   {"played" in item
                     ? item.year < -10000
                       ? item.year.toLocaleString()
-                      : item.year.toString()
+                      : formatDate(item.year)
                     : datePropIdMap[item.date_prop_id]}
                 </span>
               </animated.div>
@@ -128,7 +130,7 @@ export default function ItemCard(props: Props) {
             >
               <span className={styles.label}>{capitalize(item.label)}</span>
               <span className={styles.date}>
-                {capitalize(datePropIdMap[item.date_prop_id])}: {item.year}
+                {capitalize(datePropIdMap[item.date_prop_id])}: {item.year.toLocaleString()}
               </span>
               <span className={styles.description}>{item.description}.</span>
               <a
